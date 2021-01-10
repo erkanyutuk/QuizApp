@@ -98,7 +98,7 @@
                             </div>
 
                             <x-jet-dropdown-link href="{{ route('quizzes.index') }}">
-                                {{ __('Profile') }}
+                                Quizler
                             </x-jet-dropdown-link>
                             @endif
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Quiz;
+use App\Http\Requests\CreateQuizRequest;
+use App\Http\Requests\QuizUpdateRequest;
 
 class QuizController extends Controller
 {
@@ -15,8 +17,8 @@ class QuizController extends Controller
      */
     public function index()
     {
-        $quizzes=Quiz::paginate(5);
-        return view('admin.quiz.list',compact('quizzes'));
+        $quizzes = Quiz::paginate(5);
+        return view('admin.quiz.list', compact('quizzes'));
     }
 
     /**
@@ -26,7 +28,7 @@ class QuizController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.quiz.create');
     }
 
     /**
@@ -35,9 +37,10 @@ class QuizController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateQuizRequest $request)
     {
-        //
+        Quiz::create($request->post());
+        return redirect()->route('quizzes.index')->withSuccess('Quiz Elave Olundu');
     }
 
     /**
@@ -59,7 +62,8 @@ class QuizController extends Controller
      */
     public function edit($id)
     {
-        //
+        $quiz = Quiz::find($id) ?? abort(404, 'Quiz tapilmadi');
+        return view('admin.quiz.edit', compact('quiz'));
     }
 
     /**
@@ -69,9 +73,11 @@ class QuizController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(QuizUpdateRequest $request, $id)
     {
-        //
+        $quiz = Quiz::find($id) ?? abort(404, 'Quiz tapilmadi');
+        Quiz::where('id', $id)->update($request->except(['_method', '_token']));
+        return redirect()->route('quizzes.index')->withSuccess('Quiz melumatlari yenilendi');
     }
 
     /**
@@ -82,6 +88,8 @@ class QuizController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $quiz = Quiz::find($id) ?? abort(404, 'Quiz Tapilmadi');
+        Quiz::where('id', $id)->delete();
+        return redirect()->route('quizzes.index')->withSuccess('Quiz Silindi');
     }
 }

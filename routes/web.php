@@ -16,6 +16,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/panel', function () {
 /*Route::middleware(['auth','isAdmin'])->get('/deneme',function(){
     return 'Salam';
 });*/
-Route::group(['middleware'=>['auth','isAdmin'],'prefix'=>'admin',],function(){
-    Route::resource('quizzes',QuizController::class);
+Route::group(['middleware' => ['auth', 'isAdmin'], 'prefix' => 'admin',], function () {
+    Route::get('quizzes/{id}', [QuizController::class, 'destroy'])->whereNumber('id')->name('quizzes.destroy');
+    Route::resource('quizzes', QuizController::class);
 });
