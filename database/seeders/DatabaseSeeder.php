@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 use App\Models\User;
+use App\Models\Question;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             QuizSeeder::class,
+            QuestionSeeder::class,
         ]);
     }
 }
