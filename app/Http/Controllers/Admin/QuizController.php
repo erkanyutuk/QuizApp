@@ -17,7 +17,7 @@ class QuizController extends Controller
      */
     public function index()
     {
-        $quizzes = Quiz::paginate(5);
+        $quizzes = Quiz::withCount('questions')->paginate(10);
         return view('admin.quiz.list', compact('quizzes'));
     }
 
@@ -76,7 +76,7 @@ class QuizController extends Controller
     public function update(QuizUpdateRequest $request, $id)
     {
         $quiz = Quiz::find($id) ?? abort(404, 'Quiz tapilmadi');
-        Quiz::where('id', $id)->update($request->except(['_method', '_token']));
+        Quiz::where($id)->update($request->except(['_method', '_token']));
         return redirect()->route('quizzes.index')->withSuccess('Quiz melumatlari yenilendi');
     }
 
