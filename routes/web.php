@@ -6,12 +6,14 @@ use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\MainController;
 
 Route::get('/', function () {
-    return view('dashboard');
+    return view('welcome');
 });
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('panel', [MainController::class, 'index'])->name('dashboard');
-    Route::get('quiz/{slug}', [MainController::class, 'quizDetails'])->name('quiz.details');
+    Route::get('quiz/detail/{slug}', [MainController::class, 'quizDetails'])->name('quiz.details');
+    Route::get('quiz/{slug}', [MainController::class, 'quiz'])->name('quiz.join');
+    Route::post('quiz/{slug}', [MainController::class, 'check'])->name('quiz.check');
 });
 
 

@@ -14,6 +14,8 @@ class Quiz extends Model
     use Sluggable;
     protected $fillable = ['title', 'description', 'finished_at'];
     protected $dates = ['finished_at'];
+    protected $appends = ['details'];
+
     public function sluggable(): array
     {
         return [
@@ -29,5 +31,21 @@ class Quiz extends Model
     public function questions()
     {
         return $this->hasMany('App\Models\Question');
+    }
+    public function my_result()
+    {
+        return $this->hasOne('App\Models\Results')->where('user_id', auth()->user()->id);
+    }
+    public function results()
+    {
+        return $this->hasMany('App\Models\Results');
+    }
+    public function getDetailsAttribute()
+    {
+        return $this->results()->avg('point');
+    }
+    public function top_ten()
+    {
+        return $this->results()->orderByDesc('point')->take(10);
     }
 }
