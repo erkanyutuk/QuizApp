@@ -10,6 +10,12 @@
                             Topladığın bal
                             <span class="badge badge-info badge-pill" style="font-size: 15px">{{$quiz->my_result->point}} bal</span>
                           </li>
+                          @if ($quiz->myplac>10)
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Sıralaman
+                            <span class="badge badge-info badge-pill" style="font-size: 13px">{{$quiz->myplace}}</span>
+                          </li>
+                          @endif
                           <li class="list-group-item d-flex justify-content-between align-items-center">
                             Düz / Səhv
                             <strong><span class="badge badge-success badge-pill">{{$quiz->my_result->correct}} düz</span>
@@ -21,7 +27,7 @@
                     @if ($quiz->finished_at && $quiz->my_result==null)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Quiz bitiş tarixi
-                        <span class="badge badge-secondary badge-pill">{{$quiz->finished_at ? $quiz->finished_at->diffForHumans() : null}}</span>
+                        <span class="badge badge-danger badge-pill">{{$quiz->finished_at ? $quiz->finished_at->diffForHumans() : null}}</span>
                       </li>
                     @endif
                     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -34,11 +40,11 @@
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Ortalama bal
-                        <span class="badge badge-light badge-pill" style="font-size: 15px">{{round($quiz->details)}}
+                        <span class="badge badge-light badge-pill" style="font-size: 14px">{{round($quiz->details)}}
                         </span>
                       </li>
                   </ul>
-                  @if ($quiz->top_ten!=null)
+                  @if ($quiz->top_ten!='[]')
                   <div class="card mt-3 mb-3">
                     <div class="card-body">
                         <h5 class="card-title"> İlk 10</h5>
@@ -51,8 +57,11 @@
                                 {{asset($user->profile_photo_path)}}
                                  @else
                                  {{$user->user->profile_photo_url}}
-                                 @endif" alt="" style="width: 40px; height:40px; border-radius:25px">
-                                {{$user->user->name}}
+                                 @endif" alt="" style="width: 40px; height:40px; border-radius:25px;">
+                                 <mark @if($user->user->id==auth()->user()->id)
+                                    class="text-danger"
+                                    @endif>{{$user->user->name}}</mark>
+
                                 <span class="badge badge-pill badge-success " style="font-size: 15px"> {{$user->point}}</span>
                            </li>
                             @endforeach
@@ -66,7 +75,9 @@
                 <div class="col-md-8">
                     <p>{{$quiz->description}}</p>
                     @if ($quiz->my_result == null)
+                    @if($quiz->finished_at>now())
                     <a href="{{route('quiz.join',$quiz->slug)}}" class="btn btn-primary form-control btn-sm">Quizə keçid</a>
+                    @endif
                     @else
                     <a href="{{route('quiz.join',$quiz->slug)}}" class="btn btn-dark form-control btn-sm">Quiz cavablarına baxış</a>
                     @endif

@@ -6,7 +6,11 @@ use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\MainController;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (auth()) {
+        return redirect()->route('dashboard');
+    } else {
+        return view('welcome');
+    }
 });
 
 Route::group(['middleware' => 'auth'], function () {

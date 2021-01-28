@@ -11,7 +11,9 @@ class MainController extends Controller
 {
     public function index()
     {
-        $quizzes = Quiz::where('status', 'publish')->withCount('questions')->paginate(5);
+        $quizzes = Quiz::where('status', 'publish')->where(function ($query) {
+            $query->whereNull('finished_at')->orWhere('finished_at', '>', now());
+        })->withCount('questions')->paginate(5);
         return view('dashboard', compact('quizzes'));
     }
     public function quizDetails($slug)
@@ -21,10 +23,11 @@ class MainController extends Controller
     }
     public function quiz($slug)
     {
-        $quiz = Quiz::where('slug', $slug)->with('questions', 'my_result')->first() ?? abort(404, "Quiz tapılmadı");
+        $quiz = Quiz::where('slug', $slug)->with('questions.myAnswer', 'my_result',)->first() ?? abort(404, "Quiz tapılmadı");
         if ($quiz->my_result) {
-            abort(404, 'Bu quizdə daha əvvəl iştirak ettiniz');
+            return view('result', compact('quiz'));
         }
+
         return view('quiz', compact('quiz'));
     }
     public function check(Request $request, $slug)
@@ -60,9 +63,5 @@ class MainController extends Controller
 
 
         return redirect()->route('quiz.details', $slug)->withSuccess('Təbriklər! Quizi ' . $point . ' bal ilə bitirdiniz.');
-    }
-
-    public function my_result($slug, $user_id)
-    {
     }
 }

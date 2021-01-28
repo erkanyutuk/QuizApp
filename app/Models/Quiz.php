@@ -14,7 +14,7 @@ class Quiz extends Model
     use Sluggable;
     protected $fillable = ['title', 'description', 'finished_at'];
     protected $dates = ['finished_at'];
-    protected $appends = ['details'];
+    protected $appends = ['details', 'myplace'];
 
     public function sluggable(): array
     {
@@ -47,5 +47,15 @@ class Quiz extends Model
     public function top_ten()
     {
         return $this->results()->orderByDesc('point')->take(10);
+    }
+    public function getMyPlaceAttribute()
+    {
+        $k = 0;
+        foreach ($this->results()->orderByDesc('point')->get() as $result) {
+            $k++;
+            if ($result->user_id == auth()->user()->id) {
+                return $k;
+            }
+        }
     }
 }
